@@ -1,24 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { registrationAction } from "../../redux/slice/sliceRegistration";
+import React from "react";
+
 import { useNavigate } from "react-router-dom";
 import "./Login.scss";
-function LoginPage() {
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const dispatch = useDispatch();
+function LoginPage({ setUsername, setPassword, confirmLogIn, loginData }) {
   const navigate = useNavigate();
-  const loginData = useSelector((state) => state.registrationReducer.loginData);
-  console.log(loginData);
-
-  const confirmLogIn = async () => {
-    const { data } = await axios.post("http://localhost:5000/auth/login", {
-      username,
-      password,
-    });
-    dispatch(registrationAction.getLoginData(data));
-  };
 
   return (
     <section className="login">

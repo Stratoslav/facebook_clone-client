@@ -1,31 +1,15 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { registrationAction } from "../../redux/slice/sliceRegistration";
-import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function RegistrationPage() {
-  const [username, setUsername] = useState("");
-  const [surname, setSurname] = useState("");
-  const [password, setPassword] = useState("");
+function RegistrationPage({
+  submitForm,
+  setPassword,
+  setSurname,
+  setUsername,
+  data,
+}) {
   const navigate = useNavigate();
-  const data = useSelector((state) => state.registrationReducer.data);
-  const dispatch = useDispatch();
 
-  const submitForm = (e) => {
-    e.preventDefault();
-    createUser();
-    setUsername("");
-    setSurname("");
-    setPassword("");
-  };
-  const createUser = async () => {
-    const { data } = await axios.post(
-      "http://localhost:5000/auth/registration",
-      { username, surname, password }
-    );
-    dispatch(registrationAction.getData(data));
-  };
   return (
     <div className="registration">
       <h1>Registration</h1>

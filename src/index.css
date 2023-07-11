@@ -13,10 +13,13 @@ code {
 }
 
 a{
-text-decoration: none;
-color: #000;
+    text-decoration: none;
+      color: #FFF8DE;
+ 
 }
-
+span{
+        transition: all 0.3s linear;
+}
 label{
   display: block;
 }
@@ -24,13 +27,13 @@ label{
 input{
       padding: 5px;
         border: none;
-        border-bottom: 3px solid #a0c6ec;
+        border-bottom: 3px solid #99A98F;
         margin-bottom: 10px;
             font-size: 20px;
 }
 input:focus {
   outline: none;
-      border-bottom: 3px solid #356ca3;
+      border-bottom: 3px solid #D6E8DB;
       color: #000;
 }
 
@@ -38,15 +41,23 @@ input:focus {
 button{
       margin: 0 10px;
         padding: 10px;
-        border: 3px solid #a0c6ec;
+        border: 1px solid #d6e8db;
         border-radius: 3px;
         font-size: 22px;
-background-color: inherit;
+background-color: #99A98F;
+    color: #ffffff;
 
-  
+  transition: all 0.3s linear;
+}
+button:hover, span:hover{
+  background-color: #768070;
 }
 
 h1{
-      color: #7b7b7b;
+      color: #fff;
       font-size: 32px;
+}
+
+div, p{
+  color: #ffffff;
 }

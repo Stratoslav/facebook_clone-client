@@ -1,27 +1,31 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { registrationAction } from "../../redux/slice/sliceRegistration";
 import "./Header.scss";
-function Header() {
-  const dispatch = useDispatch();
-  const logOut = () => {
-    dispatch(registrationAction.logout());
-  };
-  const { data } = useSelector((state) => state.registrationReducer);
+
+function HeaderComponent({ data, logOut, userData }) {
+  console.log(userData);
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--user-avatar", userData.image);
+    //  root.style.setProperty("--user-age", userData.age.toString());
+  }, [userData]);
   return (
     <header className="header">
       <div className="header__left">
-        <NavLink to="/">
+        <NavLink to={`/${data.id}`}>
           <img
             className="header__avatar"
-            src="https://cdn-icons-png.flaticon.com/512/6596/6596121.png"
+            src={
+              userData.image
+                ? `http://localhost:5000/${userData.image}`
+                : "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"
+            }
             alt=""
           />
         </NavLink>
 
         {data.username ? (
-          <NavLink to="/">
+          <NavLink to={`/${data.id}`}>
             <span header className="header__username">
               {data.username}
             </span>
@@ -53,4 +57,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default HeaderComponent;

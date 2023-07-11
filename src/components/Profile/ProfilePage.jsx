@@ -1,65 +1,129 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+
 import "./Profile.scss";
-import { profileApi } from "../../services/profile-API";
+import { useDispatch, useSelector } from "react-redux";
+import AddDataProfile from "./EditProfile/AddDataProfile";
+import { profileActions } from "../../redux/slice/sliceProfile";
+import { userActions } from "../../redux/slice/sliceUsers";
+import EditDataProfile from "./EditProfile/EditDataProfile";
+import { useParams } from "react-router-dom";
+import { userApi } from "../../services/users-API";
+import Posts from "../Posts/Posts";
 
-function ProfilePage() {
-  const { data, loginData } = useSelector((state) => state.registrationReducer);
-  const { userData } = useSelector((state) => state.userReducer);
+function ProfilePage({ data, userData }) {
+  const { isEditMode } = useSelector((state) => state.profileReducer);
+  const { isUpdateMode, user } = useSelector((state) => state.userReducer);
 
-  useEffect(() => {
-    if (loginData.length !== 0) {
-      getProfileUser(loginData.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loginData]);
-  useEffect(() => {
-    if (data.length !== 0) {
-      getUserData(data.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  const getUserData = async (id) => {
-    await profileApi.getDataApi(id);
+  const dispatch = useDispatch();
+  const params = useParams();
+  console.log(params);
+  const updateData = () => {
+    dispatch(userActions.setUpdateMode(true));
   };
 
-  const getProfileUser = async (id) => {
-    await profileApi.getProfileUserApi(id);
+  useEffect(() => {
+    getSelectUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const getSelectUser = async () => {
+    if (params.id) {
+      await userApi.getUserApi(+params.id);
+    }
   };
+  console.log(user);
   return (
-    <section className="profile">
-      <div className="profile__info">
-        <img
-          className="header__avatar"
-          src="https://cdn-icons-png.flaticon.com/512/6596/6596121.png"
-          alt=""
+    <>
+      <section className="profile">
+        {/* <form onSubmit={handleSubmit}>
+        <input
+          enctype="multipart/form-data"
+          type="file"
+          onChange={(e) => changeAvatar(e)}
         />
-        {data ? (
-          <div key={data.key}>
-            <h1>
-              {data.username} {data.surname}
-            </h1>
-          </div>
-        ) : (
-          <div>LOADING...</div>
-        )}
-      </div>
-      <div className="profile_descr">
-        <p>age: {userData.age}</p>
-        <p>city: {userData.city}</p>
-        <p>status: {userData.status}</p>
-        <p>position: {userData.position}</p>
-        <p>followers: {userData.followers}</p>
-        <p>following: {userData.following}</p>
-        <p>Looking for a job: {userData.lookingforajob}</p>
-      </div>
-      {userData === "" ? (
-        <button>add data</button>
-      ) : (
-        <button>update data</button>
-      )}
-    </section>
+        <button type="submit">Set Avatar</button>
+      </form> */}
+
+        <div className="profile__info">
+          {data ? (
+            <div key={data.key}>
+              <h1>
+                {+params.id === data.id ? (
+                  <>
+                    {data.username} {data.surname}
+                  </>
+                ) : (
+                  <>
+                    {user.username} {user.surname}
+                  </>
+                )}
+              </h1>
+            </div>
+          ) : (
+            <div>LOADING...</div>
+          )}
+          <img
+            className="profile__image"
+            src={
+              +params.id === data.id
+                ? userData.image
+                  ? `http://localhost:5000/${userData.image}`
+                  : "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
+                : user.image
+                ? `http://localhost:5000/${user.image}`
+                : "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
+            }
+            alt=""
+          />
+        </div>
+        <div className="profile__about">
+          {!isEditMode ? (
+            <div>
+              {" "}
+              {!isUpdateMode ? (
+                <div className="profile_descr">
+                  <p>age: {userData.age}</p>
+                  <p>city: {userData.city}</p>
+                  <p>status: {userData.status}</p>
+                  <p>position: {userData.position}</p>
+                  <p>followers: {userData.followers}</p>
+                  <p>following: {userData.following}</p>
+                  <p>
+                    Looking for a job: {userData.lookingforajob ? "YES" : "NO"}
+                  </p>
+                </div>
+              ) : (
+                <EditDataProfile />
+              )}
+            </div>
+          ) : (
+            <AddDataProfile />
+          )}
+
+          {userData === "" ? (
+            <div>
+              {" "}
+              {!isEditMode ? (
+                <button
+                  onClick={() => dispatch(profileActions.setEditMode(true))}
+                >
+                  add data
+                </button>
+              ) : null}{" "}
+            </div>
+          ) : (
+            <>
+              {+params.id === data.id ? (
+                <button className="profile__btn" onClick={updateData}>
+                  update data
+                </button>
+              ) : null}
+            </>
+          )}
+        </div>
+      </section>
+
+      <Posts />
+    </>
   );
 }
 
